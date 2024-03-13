@@ -1,0 +1,14 @@
+const router = require("express").Router();
+router.use("/auth", require("./auth.route"));
+router.use("/departments", require("./departments.route"));
+router.use("/boards", require("./boards.route"));
+router.use("/labels", require("./labels.route"));
+router.use("/states", require("./states.route"));
+router.use("/tickets", require("./tickets.route"));
+router.use("/tasks", require("./tasks.route"));
+router.use("/users", require("./users.route"));
+router.use("/activities", require("./activities.route"));
+router.use("/epics", require("./epics.route"));
+router.use("/archived", require("./archived.route"));
+router.use("/uploads", require("./uploads.route"));
+module.exports = router;
