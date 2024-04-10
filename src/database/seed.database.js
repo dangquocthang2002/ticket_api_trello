@@ -33,7 +33,7 @@ let users = [
     username: "user4",
     email: "user4@example.com",
     password: "123123",
-    role: "USER",
+    role: "LEADER",
   }),
   new User({
     name: "user5",
@@ -47,7 +47,7 @@ let users = [
     username: "user6",
     email: "user6@example.com",
     password: "123123",
-    role: "USER",
+    role: "LEADER",
   }),
   new User({
     name: "user7",
