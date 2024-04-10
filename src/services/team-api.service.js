@@ -1,7 +1,7 @@
 const axios = require("axios");
 
 const instance = axios.create({
-  baseURL: process.env.TEAM_API_URL || "http://localhost:3001/v1",
+  baseURL: "http://localhost:3001/v1",
   timeout: 10000,
   headers: { "x-token": process.env.SECRET_CONNECT_TEAM_API },
 });
