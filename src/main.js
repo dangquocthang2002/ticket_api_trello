@@ -16,8 +16,12 @@ const io = require("socket.io")(http, {
 const socket = require("./socket");
 app.use(
   cors({
-    origin: [/localhost/, /docker-pratice-production.up.railway.app/],
-  })
+    origin: [
+      /localhost/,
+      /docker-pratice-production.up.railway.app/,
+      "https://ticket-web-trello.onrender.com",
+    ],
+  }),
 );
 
 app.use(bodyParser.json());
