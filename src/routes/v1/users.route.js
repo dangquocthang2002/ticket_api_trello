@@ -3,30 +3,40 @@ const BoardsInvitedMembersController = require("../../controllers/boardsInvitedM
 const DepartmentsUsersController = require("../../controllers/departmentsUsers.controller");
 
 const { verifyLogin } = require("../../middlewares/auth.middleware");
+const { CreateUserSchema } = require("../../validation/users.validation");
+const JoiSchemaValidation = require("../../middlewares/validation.middleware");
 
 const router = require("express").Router();
 
 router.get(
   "/",
   verifyLogin(["ADMIN", "LEADER", "USER"]),
-  UsersController.showUsers
+  UsersController.showUsers,
 );
+
 router.get(
   "/email-user",
   verifyLogin(["ADMIN", "LEADER", "USER"]),
-  UsersController.findUserByEmail
+  UsersController.findUserByEmail,
 );
 
 router.get(
   "/:id/invited-boards",
   verifyLogin(["ADMIN", "LEADER", "USER"]),
-  BoardsInvitedMembersController.getListBoardsOfInvitedMember
+  BoardsInvitedMembersController.getListBoardsOfInvitedMember,
+);
+
+router.post(
+  "/create-user",
+  verifyLogin(["ADMIN", "LEADER"]),
+  JoiSchemaValidation(CreateUserSchema),
+  UsersController.createUser,
 );
 
 router.get(
   "/:id/departments",
   verifyLogin(["ADMIN", "LEADER", "USER"]),
-  DepartmentsUsersController.getListDepartmentsOfUser
+  DepartmentsUsersController.getListDepartmentsOfUser,
 );
 
 module.exports = router;
