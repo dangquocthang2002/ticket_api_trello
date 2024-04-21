@@ -1,4 +1,9 @@
 const User = require("../models/users.model");
+const { deleteBoardByUserId } = require("../services/boards.service");
+const {
+  deleteTicketByUserId,
+  deleteTicketFilesByUserId,
+} = require("../services/tickets.service");
 
 const userController = {
   showUsers: async (req, res) => {
@@ -23,6 +28,19 @@ const userController = {
         password: req.body.password,
       });
       res.status(200).json(newUser);
+    } catch (error) {
+      res
+        .status(400)
+        .json({ message: error.message || "Something went wrong!" });
+    }
+  },
+  deleteUser: async (req, res) => {
+    try {
+      await deleteBoardByUserId(req.params.id);
+      await deleteTicketByUserId(req.params.id);
+      await deleteTicketFilesByUserId(req.params.id);
+      await User.deleteOne({ _id: req.params.id });
+      res.status(200).json({ message: "Delete user successful!" });
     } catch (error) {
       res
         .status(400)

@@ -19,6 +19,12 @@ const isBoardExist = async (value) => {
   }
 };
 
+const deleteBoardByUserId = async (userId) => {
+  await BoardInvitedMemberModel.deleteMany({
+    user: userId,
+  });
+};
+
 const getBoardById = (id) => {
   return Board.findById(id);
 };
@@ -32,7 +38,7 @@ const checkMembersNotInBoard = async (userIds, board) => {
     (userId) =>
       !invitedMembersExit
         .map((invitedMemberBoard) => invitedMemberBoard.user.toString())
-        .includes(userId)
+        .includes(userId),
   );
 };
 
@@ -144,7 +150,7 @@ const getTicketsByBoard = async (boardId) => {
 
     const ticketLabelsObject = getObjectFromArray(
       ticketLabelsOfBoard,
-      "ticket"
+      "ticket",
     );
     const ticketFilesObject = getObjectFromArray(ticketFilesOfBoard, "ticket");
     const ticketUsersObject = getObjectFromArray(ticketUsersOfBoard, "ticket");
@@ -173,5 +179,6 @@ module.exports = {
   checkUserInBoard,
   getFullMembersOfBoard,
   getTicketsByBoard,
-  getBoardById
+  getBoardById,
+  deleteBoardByUserId,
 };

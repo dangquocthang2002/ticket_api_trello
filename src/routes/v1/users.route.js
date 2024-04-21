@@ -33,6 +33,12 @@ router.post(
   UsersController.createUser,
 );
 
+router.delete(
+  "/:id",
+  // verifyLogin(["ADMIN", "LEADER"]),
+  UsersController.deleteUser,
+);
+
 router.get(
   "/:id/departments",
   verifyLogin(["ADMIN", "LEADER", "USER"]),

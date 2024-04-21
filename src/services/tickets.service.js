@@ -20,8 +20,18 @@ const checkUsersNotInTicket = async (userIds, ticket) => {
   });
   return userIds.filter(
     (userId) =>
-      !existedUser.map((user) => user.user.toString()).includes(userId)
+      !existedUser.map((user) => user.user.toString()).includes(userId),
   );
+};
+const deleteTicketByUserId = async (userId) => {
+  await TicketUser.deleteMany({
+    user: userId,
+  });
+};
+const deleteTicketFilesByUserId = async (userId) => {
+  await TicketFiles.deleteMany({
+    user: userId,
+  });
 };
 const checkUserAccessTicket = async (user, ticket) => {
   if (user.role === "ADMIN") {
@@ -78,5 +88,7 @@ module.exports = {
   isTicketExist,
   checkUsersNotInTicket,
   checkUserAccessTicket,
+  deleteTicketFilesByUserId,
+  deleteTicketByUserId,
   getDetailTicket,
 };
