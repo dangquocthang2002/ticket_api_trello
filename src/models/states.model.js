@@ -14,7 +14,11 @@ const stateSchema = new mongoose.Schema(
     },
     isDone: {
       type: Boolean,
-      default: false
+      default: false,
+    },
+    isInProgress: {
+      type: Boolean,
+      default: false,
     },
     board: {
       type: mongoose.Schema.Types.ObjectId,
@@ -24,7 +28,7 @@ const stateSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 let State = mongoose.model("State", stateSchema);
