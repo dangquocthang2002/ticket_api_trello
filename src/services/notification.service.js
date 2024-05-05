@@ -27,7 +27,7 @@ const checkAndCreateNotification = async () => {
               new Notification({
                 content: `Your ticket ${ticket.name} is late`,
                 type: "LATE",
-                fromId: ticket._id,
+                fromId: epic.board,
                 toId: ticketUser.user,
               }),
             ),
@@ -46,7 +46,7 @@ const checkAndCreateNotification = async () => {
               new Notification({
                 content: `Your ticket ${ticket.name} need start`,
                 type: "START",
-                fromId: ticket._id,
+                fromId: epic.board,
                 toId: ticketUser.user,
               }),
             ),
@@ -65,9 +65,9 @@ const checkAndCreateNotification = async () => {
     (acc, curr) => acc.concat(curr),
     [],
   );
-  listNotification.forEach(async (notification) => {
-    await notification.save();
-  });
+  // listNotification.forEach(async (notification) => {
+  //   await notification.save();
+  // });
 };
 
 module.exports = {
