@@ -6,7 +6,8 @@ const AddStateSchema = Joi.object({
   positionIndex: Joi.number().required(),
   isArchived: Joi.boolean(),
   board: Joi.string().required().external(isBoardExist),
-  isDone: Joi.boolean().optional()
+  isDone: Joi.boolean().optional(),
+  isInProgress: Joi.boolean().optional(),
 });
 
 const UpdateStateSchema = Joi.object({
@@ -15,6 +16,7 @@ const UpdateStateSchema = Joi.object({
   isArchived: Joi.boolean(),
   board: Joi.string().external(isBoardExist),
   isDone: Joi.boolean(),
+  isInProgress: Joi.boolean(),
 });
 
 module.exports = { AddStateSchema, UpdateStateSchema };
