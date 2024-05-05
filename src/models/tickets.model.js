@@ -27,6 +27,12 @@ const ticketSchema = new mongoose.Schema(
     },
     isArchived: {
       type: Boolean,
+      default: false,
+    },
+    status: {
+      type: String,
+      enum: ["todo", "inProgress", "done", "archived"],
+      default: "todo",
     },
     estimatePoints: {
       type: Number,
@@ -46,7 +52,7 @@ const ticketSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 let Ticket = mongoose.model("Ticket", ticketSchema);

@@ -35,7 +35,7 @@ router.post(
 
 router.delete(
   "/:id",
-  // verifyLogin(["ADMIN", "LEADER"]),
+  verifyLogin(["ADMIN", "LEADER"]),
   UsersController.deleteUser,
 );
 
