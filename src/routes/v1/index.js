@@ -9,6 +9,7 @@ router.use("/tasks", require("./tasks.route"));
 router.use("/users", require("./users.route"));
 router.use("/activities", require("./activities.route"));
 router.use("/epics", require("./epics.route"));
+router.use("/notification", require("./notification.route"));
 router.use("/archived", require("./archived.route"));
 router.use("/uploads", require("./uploads.route"));
 module.exports = router;

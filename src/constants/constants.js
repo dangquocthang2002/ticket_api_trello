@@ -1,4 +1,5 @@
 exports.unArchivedConditions = [{ isArchived: false }, { isArchived: null }];
+exports.typeNotification = ["todo", "inProgress", "done", "archived"];
 exports.GITHUB_API_URL = `https://api.github.com`;
 exports.HOST_GIT_API_NAME = `api.github.com`;
 exports.USER_AGENT =

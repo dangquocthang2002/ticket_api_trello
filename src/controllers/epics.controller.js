@@ -27,20 +27,23 @@ const epicController = {
       }));
       const ticketsOfEpics = await Promise.all(
         epics.map(async (epic) => {
-          const tickets = await TicketModel.find({ epic: epic._id });
+          const tickets = await TicketModel.find({
+            epic: epic._id,
+          });
           return {
             ...epic._doc,
             tickets: tickets
               .filter((t) => !t.private)
+              .filter((t) => !t.isArchived)
               .filter((ticket) =>
                 states
                   .map((state) => String(state._id))
                   .includes(String(ticket.state))
                   ? true
-                  : false
+                  : false,
               ),
           };
-        })
+        }),
       );
       res.status(200).json({
         board: board,
@@ -97,7 +100,7 @@ const epicController = {
         req.body,
         {
           new: true,
-        }
+        },
       );
       res.status(200).json(epicUpdate);
     } catch (error) {
