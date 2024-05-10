@@ -18,9 +18,25 @@ const notificationController = {
       const value = await Notification.find({
         toId: req.data._id,
       })
+        .sort({ createdAt: -1 })
         .skip(perPage * page - perPage)
         .limit(perPage);
       res.status(200).json(value);
+      value.forEach((notification) => {
+        if (!notification.isSeen) {
+          notification.isSeen = true;
+          notification.save();
+        }
+      });
+    } catch (error) {}
+  },
+  getNumberUnseen: async (req, res) => {
+    try {
+      const value = await Notification.find({
+        toId: req.data._id,
+        isSeen: false,
+      });
+      res.status(200).json(value.length);
     } catch (error) {}
   },
 };

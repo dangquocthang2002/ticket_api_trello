@@ -1,6 +1,8 @@
 const Notification = require("../models/notification.model");
 const TicketUser = require("../models/ticketsUsers.model");
+const { ActivityType } = require("./activities/activity.constants");
 const { findAllEpicsNotification } = require("./epics.service");
+const { eventEmitter } = require("./eventEmitter.service");
 
 const createNotification = async () => {
   const newNotification = new Notification({
@@ -65,9 +67,15 @@ const checkAndCreateNotification = async () => {
     (acc, curr) => acc.concat(curr),
     [],
   );
-  // listNotification.forEach(async (notification) => {
-  //   await notification.save();
-  // });
+
+  listNotification.forEach(async (notification) => {
+    await notification.save();
+    eventEmitter.emit(ActivityType.ADD_NEW_NOTIFICATION, {
+      activeUser: { _id: notification.to_id },
+      notification: notification,
+    });
+  });
+  console.log("send notification");
 };
 
 module.exports = {
