@@ -1,6 +1,7 @@
 const express = require("express");
 const morgan = require("morgan");
 
+const cron = require("node-cron");
 const app = express();
 const port = process.env.PORT || "3001";
 const bodyParser = require("body-parser");
@@ -14,6 +15,9 @@ const io = require("socket.io")(http, {
   },
 });
 const socket = require("./socket");
+const {
+  checkAndCreateNotification,
+} = require("./services/notification.service");
 app.use(
   cors({
     origin: [
@@ -30,6 +34,12 @@ app.use(cookieParser());
 //routes
 app.get("/v1/health-check", (req, res) => res.send("ok"));
 app.use("/v1", require("./routes/v1/index"));
+
+cron
+  .schedule("* 1 * * *", () => {
+    checkAndCreateNotification();
+  })
+  .start();
 
 async function main() {
   await connectMongoDB();

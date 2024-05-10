@@ -11,4 +11,10 @@ router.get(
   notificationController.getListNotificationByToId,
 );
 
+router.get(
+  "/numberUnseen",
+  verifyLogin(["ADMIN", "LEADER", "USER"]),
+  notificationController.getNumberUnseen,
+);
+
 module.exports = router;

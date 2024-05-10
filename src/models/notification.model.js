@@ -15,8 +15,12 @@ const notificationSchema = new mongoose.Schema(
     type: {
       type: String,
       enum: ["LATE", "START", "NORMAL"],
-      default: "USER",
+      default: "NORMAL",
       required: true,
+    },
+    isSeen: {
+      type: Boolean,
+      default: false,
     },
   },
   {
