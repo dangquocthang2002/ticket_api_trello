@@ -70,8 +70,8 @@ const checkAndCreateNotification = async () => {
 
   listNotification.forEach(async (notification) => {
     await notification.save();
-    eventEmitter.emit(ActivityType.ADD_NEW_NOTIFICATION, {
-      activeUser: { _id: notification.to_id },
+    eventEmitter.emit(ActivityType.ADD_NEW_NOTIFICATION, notification.toId, {
+      activeUser: { _id: notification.toId },
       notification: notification,
     });
   });

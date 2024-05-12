@@ -1,3 +1,4 @@
 module.exports = {
-  Sockets: require("./boards"),
+  SocketsBoards: require("./boards"),
+  SocketsNotification: require("./notification"),
 };

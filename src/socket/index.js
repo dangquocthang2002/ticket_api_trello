@@ -1,5 +1,6 @@
-const { Sockets } = require("./namespaces");
+const { SocketsBoards, SocketsNotification } = require("./namespaces");
 
 module.exports = (io) => {
-  Sockets(io, io.of("/boards"));
+  SocketsBoards(io, io.of("/boards"));
+  SocketsNotification(io, io.of("/notifications"));
 };
