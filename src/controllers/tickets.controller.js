@@ -72,8 +72,8 @@ const ticketsController = {
       if (req.data.role !== "ADMIN") {
         const ticketPrivateAccess = await Promise.all(
           ticketPrivate.map(async (ticket) =>
-            (await checkUserAccessTicket(req.data, ticket)) ? ticket : null,
-          ),
+            (await checkUserAccessTicket(req.data, ticket)) ? ticket : null
+          )
         );
         return res.status(200).json(
           tickets.filter(
@@ -82,8 +82,8 @@ const ticketsController = {
               ticketPrivateAccess
                 .filter((ticket) => ticket !== null)
                 .map((t) => t._id)
-                .includes(ticket._id),
-          ),
+                .includes(ticket._id)
+          )
         );
       }
       res.status(200).json(tickets);
@@ -148,7 +148,7 @@ const ticketsController = {
           if (newState.board.toString() !== oldState.board.toString()) {
             return handelError(
               400,
-              "newState and oldState are not in the same board",
+              "newState and oldState are not in the same board"
             );
           }
         }
@@ -156,7 +156,7 @@ const ticketsController = {
           if (!checkTheSameBoard(ticket.state.toString(), req.body.label)) {
             return handelError(
               400,
-              "State and label are not in the same board",
+              "State and label are not in the same board"
             );
           }
         }
@@ -209,21 +209,20 @@ const ticketsController = {
           ticketUpdate: ticketUpdateEvent,
         });
       }
-
       const isMoved =
         Boolean(req.body.state) &&
         String(req.body.state) !== String(ticket.state);
       const newState = await isStateObject(req.body.state);
-      const type = newState.isDone
+      const type = newState?.isDone
         ? "done"
-        : newState.isInProgress
+        : newState?.isInProgress
         ? "inProgress"
         : "todo";
       const ticketUpdate = await Ticket.findByIdAndUpdate(
         req.ticketId,
         {
           ...req.body,
-          status: type,
+          status: newState ? type : ticket?.status,
           ...(isMoved
             ? {
                 movedAt: new Date(),
@@ -232,7 +231,7 @@ const ticketsController = {
         },
         {
           new: true,
-        },
+        }
       );
 
       return res.status(200).json(ticketUpdate);
@@ -329,9 +328,7 @@ const ticketsController = {
         .sort({ updatedAt: "desc" });
       const filteredTickets = tickets.filter(
         (ticket) =>
-          ticket.state &&
-          ticket.state?.board &&
-          ticket.state?.board?.department,
+          ticket.state && ticket.state?.board && ticket.state?.board?.department
       );
       res.status(200).json(filteredTickets);
     } catch (error) {
