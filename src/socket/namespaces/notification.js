@@ -21,36 +21,36 @@ function NotificationSocket(io, namespace) {
         throw new Error("board not found");
       }
     });
-    namespace.on("connection", (socket) => {
-      console.log(socket.id + " is connected");
-      const userActive = verifyToken(socket.handshake.query.token);
-      if (userActive) {
-        listenSocketEvents(socket);
-        socket.on("disconnect", () => {
-          try {
-            let index = -1;
-            socket.leave(
-              allSockets.find((s, i) => {
-                index = i;
-                return s.socketId === socket.id;
-              }).boardId,
-            );
-            if (index > -1) {
-              allSockets.splice(index, 1);
-            }
-          } catch (error) {
-            console.log("[error]", "leave room :", error);
-          }
-          console.log(socket.id + " disconnected");
-        });
-      } else {
-        socket.disconnect();
-        console.log(socket.id, " user have to login");
-      }
-    });
   };
+  namespace.on("connection", (socket) => {
+    console.log(socket.id + " is connected");
+    const userActive = verifyToken(socket.handshake.query.token);
+    if (userActive) {
+      listenSocketEvents(socket);
+      socket.on("disconnect", () => {
+        try {
+          let index = -1;
+          socket.leave(
+            allSockets.find((s, i) => {
+              index = i;
+              return s.socketId === socket.id;
+            }).boardId
+          );
+          if (index > -1) {
+            allSockets.splice(index, 1);
+          }
+        } catch (error) {
+          console.log("[error]", "leave room :", error);
+        }
+        console.log(socket.id + " disconnected");
+      });
+    } else {
+      socket.disconnect();
+      console.log(socket.id, " user have to login");
+    }
+  });
   eventEmitter.on(ActivityType.ADD_NEW_NOTIFICATION, (userId, data) => {
-    namespace.to(String(userId)).emit(ActivityType.ADD_USER_TO_BOARD, {
+    namespace.to(String(userId)).emit(ActivityType.ADD_NEW_NOTIFICATION, {
       notification: data.notification,
     });
   });
