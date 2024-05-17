@@ -36,7 +36,7 @@ app.get("/v1/health-check", (req, res) => res.send("ok"));
 app.use("/v1", require("./routes/v1/index"));
 
 cron
-  .schedule("* */1 * * *", () => {
+  .schedule("* 1 * * *", () => {
     checkAndCreateNotification();
   })
   .start();
