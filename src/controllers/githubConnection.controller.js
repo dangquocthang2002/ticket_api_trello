@@ -20,7 +20,7 @@ const githubConnectionController = {
       const canAccessBoard =
         await DepartmentService.checkUserBelongToDepartment(
           req.data,
-          board.department
+          board.department,
         );
 
       if (!canAccessBoard) {
@@ -55,7 +55,7 @@ const githubConnectionController = {
       const canAccessBoard =
         await DepartmentService.checkUserBelongToDepartment(
           req.data,
-          board.department
+          board.department,
         );
 
       if (!canAccessBoard) {
@@ -82,7 +82,7 @@ const githubConnectionController = {
       const canAccessBoard =
         await DepartmentService.checkUserBelongToDepartment(
           req.data,
-          board.department
+          board.department,
         );
 
       if (!canAccessBoard) {
@@ -94,7 +94,7 @@ const githubConnectionController = {
       const githubUpdate = await GithubConnection.findOneAndUpdate(
         { board: req.boardId },
         req.body,
-        { new: true }
+        { new: true },
       );
       res.status(200).json(githubUpdate);
     } catch (error) {
@@ -103,7 +103,36 @@ const githubConnectionController = {
         .json({ message: error.message || "Something went wrong!" });
     }
   },
+  checkCommitsInTicket: async (req, res) => {
+    try {
+      const [detailTicket, board] = await Promise.all([
+        getDetailTicket(req.ticketId),
+        getBoardByTicketId(req.ticketId),
+      ]);
+      if (!detailTicket || !board) {
+        return res.status(404).json({
+          message: "ticket not found",
+        });
+      }
+      const github = await GithubConnection.findOne({ board: board._id });
+      if (github) {
+        console.log(detailTicket);
+        github.data.repositories.map((repo) => console.log(repo));
+        repositories = await axiosGithubServer(github).get(
+          `/repos/${github.username}/${detailTicket.name}/branches`,
+        );
 
+        res.status(400).json({ message: "Have not connected to github yet" });
+      } else {
+        res.status(400).json({ message: "Have not connected to github yet" });
+      }
+    } catch (error) {
+      console.log(error.message);
+      res
+        .status(400)
+        .json({ message: error.message || "Something went wrong!" });
+    }
+  },
   //Pull-requests for ticket
   getPullRequestsInTicket: async (req, res) => {
     try {
@@ -123,8 +152,10 @@ const githubConnectionController = {
         const boardRepos = github.data.repositories
           .map((boardRepo) =>
             repositories.data.find((userRepo) =>
-              boardRepo.toLowerCase().includes(userRepo.full_name.toLowerCase())
-            )
+              boardRepo
+                .toLowerCase()
+                .includes(userRepo.full_name.toLowerCase()),
+            ),
           )
           .filter((repo) => (repo ? true : false));
 
@@ -156,7 +187,7 @@ const githubConnectionController = {
                             repo.full_name
                           }/pulls?state=all&sort=long-running&head=${
                             repo.full_name.split("/")[0]
-                          }:${branchName}`
+                          }:${branchName}`,
                         )
                         .then((pullRqsData) => {
                           if (pullRqsData.data.length > 0) {
@@ -173,10 +204,10 @@ const githubConnectionController = {
                   } catch (error) {
                     console.log(error);
                   }
-                })
+                }),
               );
               return member;
-            })
+            }),
           );
         }
         res.status(200).json(ticketPRs);

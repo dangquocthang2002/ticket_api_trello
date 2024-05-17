@@ -23,11 +23,11 @@ const router = require("express").Router();
 const ticketDetailsRouter = require("express").Router();
 
 const viewModeOnlyByState = boardViewOnly((req) =>
-  getBoardByStateId(req.body.state)
+  getBoardByStateId(req.body.state),
 );
 
 const viewModeOnlyByTicket = boardViewOnly((req) =>
-  getBoardByTicketId(req.ticketId)
+  getBoardByTicketId(req.ticketId),
 );
 
 //Add ticket
@@ -36,7 +36,7 @@ router.post(
   verifyLogin(["ADMIN", "LEADER", "USER"]),
   viewModeOnlyByState,
   JoiSchemaValidation(AddTicketSchema),
-  TicketsController.addTicket
+  TicketsController.addTicket,
 );
 
 router.use(
@@ -45,21 +45,21 @@ router.use(
     req.ticketId = req.params.id;
     next();
   },
-  ticketDetailsRouter
+  ticketDetailsRouter,
 );
 
 //Get ticket By ID
 ticketDetailsRouter.get(
   "/",
   verifyLogin(["ADMIN", "LEADER", "USER"]),
-  TicketsController.getTicketById
+  TicketsController.getTicketById,
 );
 //Delete ticket
 ticketDetailsRouter.delete(
   "/",
   verifyLogin(["ADMIN", "LEADER", "USER"]),
   viewModeOnlyByTicket,
-  TicketsController.deleteTicket
+  TicketsController.deleteTicket,
 );
 // Update ticket
 ticketDetailsRouter.put(
@@ -67,12 +67,12 @@ ticketDetailsRouter.put(
   verifyLogin(["ADMIN", "LEADER", "USER"]),
   viewModeOnlyByTicket,
   JoiSchemaValidation(UpdateTicketSchema),
-  TicketsController.updateTicket
+  TicketsController.updateTicket,
 );
 ticketDetailsRouter.get(
   "/tasks",
   verifyLogin(["ADMIN", "LEADER", "USER"]),
-  TicketsController.getTasksByTicket
+  TicketsController.getTasksByTicket,
 );
 
 // users ticket
@@ -81,18 +81,18 @@ ticketDetailsRouter.post(
   "/users",
   verifyLogin(["ADMIN", "LEADER", "USER"]),
   viewModeOnlyByTicket,
-  ticketsUsersController.addUserToTicket
+  ticketsUsersController.addUserToTicket,
 );
 ticketDetailsRouter.get(
   "/users",
   verifyLogin(["ADMIN", "LEADER", "USER"]),
-  ticketsUsersController.getUsersTicket
+  ticketsUsersController.getUsersTicket,
 );
 ticketDetailsRouter.delete(
   "/users",
   verifyLogin(["ADMIN", "LEADER", "USER"]),
   viewModeOnlyByTicket,
-  ticketsUsersController.deleteUsersTicket
+  ticketsUsersController.deleteUsersTicket,
 );
 
 // labels ticket
@@ -101,14 +101,14 @@ ticketDetailsRouter.post(
   "/labels",
   verifyLogin(["ADMIN", "LEADER", "USER"]),
   viewModeOnlyByTicket,
-  ticketsLabelsController.addLabelToTicket
+  ticketsLabelsController.addLabelToTicket,
 );
 
 ticketDetailsRouter.get(
   "/labels",
   verifyLogin(["ADMIN", "LEADER", "USER"]),
 
-  ticketsLabelsController.getTicketLabels
+  ticketsLabelsController.getTicketLabels,
 );
 
 ticketDetailsRouter.delete(
@@ -116,7 +116,7 @@ ticketDetailsRouter.delete(
   verifyLogin(["ADMIN", "LEADER", "USER"]),
   viewModeOnlyByTicket,
 
-  ticketsLabelsController.deleteLabelTicket
+  ticketsLabelsController.deleteLabelTicket,
 );
 
 // Upload Files
@@ -126,31 +126,36 @@ ticketDetailsRouter.post(
   viewModeOnlyByTicket,
   multer({ storage: multer.memoryStorage() }).array("filesUpload"),
   handleFile(),
-  fileController.addFiles
+  fileController.addFiles,
 );
 
 ticketDetailsRouter.get(
   "/files",
   verifyLogin(["ADMIN", "LEADER", "USER"]),
-  fileController.getFilesByTicket
+  fileController.getFilesByTicket,
 );
 ticketDetailsRouter.delete(
   "/files/:fileId",
   verifyLogin(["ADMIN", "LEADER", "USER"]),
   viewModeOnlyByTicket,
-  fileController.removeFileFromTicket
+  fileController.removeFileFromTicket,
 );
 ticketDetailsRouter.put(
   "/files/:fileId",
   verifyLogin(["ADMIN", "LEADER", "USER"]),
   viewModeOnlyByTicket,
 
-  fileController.updateFile
+  fileController.updateFile,
 );
 
 ticketDetailsRouter.get(
   "/pull-requests",
   verifyLogin(["ADMIN", "LEADER", "USER"]),
-  githubConnectionController.getPullRequestsInTicket
+  githubConnectionController.getPullRequestsInTicket,
+);
+ticketDetailsRouter.get(
+  "/check-commits",
+  // verifyLogin(["ADMIN", "LEADER", "USER"]),
+  githubConnectionController.checkCommitsInTicket,
 );
 module.exports = router;
