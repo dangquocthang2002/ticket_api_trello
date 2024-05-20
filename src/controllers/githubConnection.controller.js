@@ -8,6 +8,9 @@ const { getDetailTicket } = require("../services/tickets.service");
 
 const DepartmentService = require("../services/departments.service");
 const BoardService = require("../services/boards.service");
+const { eventEmitter } = require("../services/eventEmitter.service");
+const { ActivityType } = require("../services/activities/activity.constants");
+const Task = require("../models/tasks.model");
 
 const githubConnectionController = {
   createGithubDataByBoard: async (req, res) => {
@@ -116,13 +119,93 @@ const githubConnectionController = {
       }
       const github = await GithubConnection.findOne({ board: board._id });
       if (github) {
-        console.log(detailTicket);
-        github.data.repositories.map((repo) => console.log(repo));
-        repositories = await axiosGithubServer(github).get(
-          `/repos/${github.username}/${detailTicket.name}/branches`,
-        );
+        if (detailTicket.members.length > 0) {
+          const listBranchName = detailTicket.members.map(
+            (member) =>
+              member.username +
+              "/t-" +
+              detailTicket._id +
+              "/" +
+              detailTicket.name
+                .toLowerCase()
+                .replace(/[^a-z0-9 ]/g, "")
+                .replace(/\s+/g, " ")
+                .trim()
+                .split(" ")
+                .slice(0, 6)
+                .join("-"),
+          );
+          const listTaskName = detailTicket.tasks.map(
+            (task) =>
+              "task-" +
+              task._id +
+              "/" +
+              task.name
+                .toLowerCase()
+                .replace(/[^a-z0-9 ]/g, "")
+                .replace(/\s+/g, " ")
+                .trim()
+                .split(" ")
+                .slice(0, 6)
+                .join("-"),
+          );
+          const listTaskComplete = [];
+          const listTaskAsync = [];
+          await Promise.all(
+            listBranchName.map(async (branch) => {
+              await Promise.all(
+                github.data.repositories.map(async (repo) => {
+                  const urlParts = repo.split("/");
+                  const repoName = urlParts[urlParts.length - 1];
+                  const owner = urlParts[urlParts.length - 2];
+                  await axiosGithubServer(github)
+                    .get(`/repos/${owner}/${repoName}/commits?sha=${branch}`)
+                    .then(async (commits) => {
+                      await Promise.all(
+                        commits.data.map(async (commit) => {
+                          const found = listTaskName.findIndex(
+                            (element) => element === commit.commit.message,
+                          );
 
-        res.status(400).json({ message: "Have not connected to github yet" });
+                          if (
+                            found >= 0 &&
+                            !listTaskComplete.includes(
+                              detailTicket.tasks[found],
+                            )
+                          ) {
+                            // if (detailTicket.tasks[found].status != "complete")
+                            listTaskComplete.push(detailTicket.tasks[found]);
+                            listTaskAsync.push(
+                              Task.findByIdAndUpdate(
+                                detailTicket.tasks[found]._id.toString(),
+                                { status: "complete" },
+                                {
+                                  new: true,
+                                },
+                                // (err, obj) => {
+                                //   if (err) {
+                                //     console.log(err);
+                                //   } else {
+                                //     console.log(obj);
+                                //   }
+                                // },
+                              ),
+                            );
+                          }
+                        }),
+                      );
+                      console.log(listTaskAsync);
+                      const result = await Promise.all(listTaskAsync);
+                      res.status(200).json(result);
+                    })
+                    .catch((err) => {
+                      console.log("err");
+                    });
+                }),
+              );
+            }),
+          );
+        }
       } else {
         res.status(400).json({ message: "Have not connected to github yet" });
       }

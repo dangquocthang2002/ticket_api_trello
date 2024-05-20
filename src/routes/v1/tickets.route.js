@@ -155,7 +155,7 @@ ticketDetailsRouter.get(
 );
 ticketDetailsRouter.get(
   "/check-commits",
-  // verifyLogin(["ADMIN", "LEADER", "USER"]),
+  verifyLogin(["ADMIN", "LEADER", "USER"]),
   githubConnectionController.checkCommitsInTicket,
 );
 module.exports = router;
