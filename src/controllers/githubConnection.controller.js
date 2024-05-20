@@ -23,7 +23,7 @@ const githubConnectionController = {
       const canAccessBoard =
         await DepartmentService.checkUserBelongToDepartment(
           req.data,
-          board.department,
+          board.department
         );
 
       if (!canAccessBoard) {
@@ -58,7 +58,7 @@ const githubConnectionController = {
       const canAccessBoard =
         await DepartmentService.checkUserBelongToDepartment(
           req.data,
-          board.department,
+          board.department
         );
 
       if (!canAccessBoard) {
@@ -85,7 +85,7 @@ const githubConnectionController = {
       const canAccessBoard =
         await DepartmentService.checkUserBelongToDepartment(
           req.data,
-          board.department,
+          board.department
         );
 
       if (!canAccessBoard) {
@@ -97,7 +97,7 @@ const githubConnectionController = {
       const githubUpdate = await GithubConnection.findOneAndUpdate(
         { board: req.boardId },
         req.body,
-        { new: true },
+        { new: true }
       );
       res.status(200).json(githubUpdate);
     } catch (error) {
@@ -133,7 +133,7 @@ const githubConnectionController = {
                 .trim()
                 .split(" ")
                 .slice(0, 6)
-                .join("-"),
+                .join("-")
           );
           const listTaskName = detailTicket.tasks.map(
             (task) =>
@@ -147,7 +147,7 @@ const githubConnectionController = {
                 .trim()
                 .split(" ")
                 .slice(0, 6)
-                .join("-"),
+                .join("-")
           );
           const listTaskComplete = [];
           const listTaskAsync = [];
@@ -164,46 +164,86 @@ const githubConnectionController = {
                       await Promise.all(
                         commits.data.map(async (commit) => {
                           const found = listTaskName.findIndex(
-                            (element) => element === commit.commit.message,
+                            (element) => element === commit.commit.message
                           );
 
                           if (
                             found >= 0 &&
                             !listTaskComplete.includes(
-                              detailTicket.tasks[found],
+                              detailTicket.tasks[found]
                             )
                           ) {
-                            // if (detailTicket.tasks[found].status != "complete")
-                            listTaskComplete.push(detailTicket.tasks[found]);
-                            listTaskAsync.push(
-                              Task.findByIdAndUpdate(
-                                detailTicket.tasks[found]._id.toString(),
-                                { status: "complete" },
-                                {
-                                  new: true,
+                            if (
+                              detailTicket.tasks[found].status != "complete"
+                            ) {
+                              listTaskComplete.push(detailTicket.tasks[found]);
+                              listTaskAsync.push(
+                                Task.findByIdAndUpdate(
+                                  detailTicket.tasks[found]._id.toString(),
+                                  { status: "complete" },
+                                  {
+                                    new: true,
+                                  }
+                                )
+                              );
+                            }
+                          }
+                        })
+                      );
+                      const result = await Promise.all(
+                        listTaskAsync.map(async (item) => {
+                          const val = await item;
+                          eventEmitter.emit(ActivityType.USER_UPDATE_TASK, {
+                            boardActive: board,
+                            clientId: req.headers.clientid,
+                            ticketId: String(detailTicket._id),
+                            taskUpdate: val,
+                            ticketActive: detailTicket,
+                          });
+
+                          const contentChange = {
+                            name: val?.name,
+                            status: val?.status,
+                          };
+                          if (val.status === "complete") {
+                            val.status = "active";
+                            eventEmitter.emit(
+                              ActivityType.USER_COMPLETED_TASK,
+                              {
+                                activeUser: {
+                                  _id: req.data._id,
+                                  name: req.data.name,
                                 },
-                                // (err, obj) => {
-                                //   if (err) {
-                                //     console.log(err);
-                                //   } else {
-                                //     console.log(obj);
-                                //   }
-                                // },
-                              ),
+                                task: val,
+                                change: contentChange,
+                              }
+                            );
+                          } else {
+                            val.status = "complete";
+
+                            eventEmitter.emit(
+                              ActivityType.USER_UN_COMPLETED_TASK,
+                              {
+                                activeUser: {
+                                  _id: req.data._id,
+                                  name: req.data.name,
+                                },
+                                task: val,
+                                change: contentChange,
+                              }
                             );
                           }
-                        }),
+                          return val;
+                        })
                       );
-                      console.log(listTaskAsync);
-                      const result = await Promise.all(listTaskAsync);
                       res.status(200).json(result);
                     })
                     .catch((err) => {
                       console.log("err");
                     });
-                }),
+                })
               );
-            }),
+            })
           );
         }
       } else {
@@ -235,10 +275,8 @@ const githubConnectionController = {
         const boardRepos = github.data.repositories
           .map((boardRepo) =>
             repositories.data.find((userRepo) =>
-              boardRepo
-                .toLowerCase()
-                .includes(userRepo.full_name.toLowerCase()),
-            ),
+              boardRepo.toLowerCase().includes(userRepo.full_name.toLowerCase())
+            )
           )
           .filter((repo) => (repo ? true : false));
 
@@ -270,7 +308,7 @@ const githubConnectionController = {
                             repo.full_name
                           }/pulls?state=all&sort=long-running&head=${
                             repo.full_name.split("/")[0]
-                          }:${branchName}`,
+                          }:${branchName}`
                         )
                         .then((pullRqsData) => {
                           if (pullRqsData.data.length > 0) {
@@ -287,10 +325,10 @@ const githubConnectionController = {
                   } catch (error) {
                     console.log(error);
                   }
-                }),
+                })
               );
               return member;
-            }),
+            })
           );
         }
         res.status(200).json(ticketPRs);
