@@ -3,6 +3,7 @@ const User = require("../models/users.model");
 const dotenv = require("dotenv");
 
 const connectMongoDB = require("./connectMongoDB");
+const Notification = require("../models/notification.model");
 
 dotenv.config();
 
@@ -70,5 +71,10 @@ async function saveData() {
     });
   mongoose.disconnect();
 }
-
-saveData();
+async function updateNotification() {
+  connectMongoDB();
+  await Notification.updateMany({}, { isSeen: true });
+  mongoose.disconnect();
+}
+// saveData();
+updateNotification();
