@@ -16,20 +16,20 @@ const {
 const router = require("express").Router();
 
 const viewModeOnlyByBoard = boardViewOnly((req) =>
-  getBoardByBoardId(req.body.board)
+  getBoardByBoardId(req.body.board),
 );
 
 const viewModeOnlyByEpic = boardViewOnly((req) =>
-  getBoardByEpicId(req.params.id)
+  getBoardByEpicId(req.params.id),
 );
 
 //Add epic
 router.post(
   "/",
-  verifyLogin(["ADMIN", "LEADER", "USER"]),
+  // verifyLogin(["ADMIN", "LEADER", "USER"]),
   viewModeOnlyByBoard,
   JoiSchemaValidation(AddEpicSchema),
-  epicController.addEpic
+  epicController.addEpic,
 );
 //Update epic
 router.put(
@@ -37,7 +37,7 @@ router.put(
   verifyLogin(["ADMIN", "LEADER", "USER"]),
   viewModeOnlyByEpic,
   JoiSchemaValidation(UpdateEpicSchema),
-  epicController.updateEpic
+  epicController.updateEpic,
 );
 //Delete epic
 router.delete("/:id", verifyLogin(["ADMIN"]), epicController.deleteEpic);
@@ -45,14 +45,14 @@ router.delete("/:id", verifyLogin(["ADMIN"]), epicController.deleteEpic);
 router.get(
   "/:id",
   verifyLogin(["ADMIN", "LEADER", "USER"]),
-  epicController.getEpicById
+  epicController.getEpicById,
 );
 
 //Get ticket By epicID
 router.get(
   "/:id/tickets",
   verifyLogin(["ADMIN", "LEADER", "USER"]),
-  ticketsController.getTicketsByEpicId
+  ticketsController.getTicketsByEpicId,
 );
 
 module.exports = router;
