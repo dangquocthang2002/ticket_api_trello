@@ -27,7 +27,7 @@ const viewModeOnlyByEpic = boardViewOnly((req) =>
 router.post(
   "/",
   verifyLogin(["ADMIN", "LEADER", "USER"]),
-  // viewModeOnlyByBoard,
+  viewModeOnlyByBoard,
   JoiSchemaValidation(AddEpicSchema),
   epicController.addEpic,
 );

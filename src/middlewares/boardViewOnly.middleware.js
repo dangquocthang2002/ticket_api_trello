@@ -6,12 +6,12 @@ const boardViewOnly = (getBoardByCurrentObj) => {
         req.board = board;
         return next();
       }
-      if (board.viewOnly) {
-        res.status(403).json({ message: "Just view Board Only" });
-      } else {
-        req.board = board;
-        next();
-      }
+      // if (board.viewOnly) {
+      //   res.status(403).json({ message: "Just view Board Only" });
+      // } else {
+      req.board = board;
+      next();
+      // }
     } catch (error) {
       res.status(403).json({ message: "Just view Board Only" + error });
     }
