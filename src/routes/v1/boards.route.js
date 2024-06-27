@@ -111,6 +111,12 @@ boardUserRouter.get(
 );
 
 boardUserRouter.get(
+  "/tickets-done",
+  verifyLogin(["ADMIN", "LEADER", "USER"]),
+  BoardsController.getTicketsDoneInBoard
+);
+
+boardUserRouter.get(
   "/github",
   verifyLogin(["ADMIN", "LEADER", "USER"]),
   viewModeOnlyByBoard,

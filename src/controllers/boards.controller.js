@@ -164,6 +164,44 @@ const boardController = {
         .json({ message: error.message || "Something went wrong!" });
     }
   },
+
+  getTicketsDoneInBoard: async (req, res) => {
+    try {
+      const ticketss = await getTicketsByBoard(req.boardId);
+      const tickets = ticketss?.filter((ticket) => {
+        if (ticket.status === "done") {
+          return ticket.members
+            .map((member) => String(member?._id))
+            ?.includes(String(req.data._id));
+        } else {
+          return false;
+        }
+      });
+      if (req.data.role !== "ADMIN") {
+        const ticketPrivate = tickets.filter((ticket) => ticket.private);
+        const ticketPrivateAccess = await Promise.all(
+          ticketPrivate.map(async (ticket) =>
+            (await checkUserAccessTicket(req.data, ticket)) ? ticket : null
+          )
+        );
+        return res.status(200).json(
+          tickets.filter(
+            (ticket) =>
+              !ticket.private ||
+              ticketPrivateAccess
+                .filter((ticket) => ticket !== null)
+                .map((t) => t._id)
+                .includes(ticket._id)
+          )
+        );
+      }
+      res.status(200).json(tickets);
+    } catch (error) {
+      res
+        .status(400)
+        .json({ message: error.message || "Something went wrong!" });
+    }
+  },
 };
 
 module.exports = boardController;
