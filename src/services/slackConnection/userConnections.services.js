@@ -11,7 +11,7 @@ const addUserToBoardConnection = async (type, boardId, data) => {
   const user = await User.findById(data.user[0].user);
   const board = await Board.findById(boardId);
   if (slack?.data.modifyUser) {
-    const text = `\n>\`${data.activeUser.name}\` add \`${user.name}\` to board <${process.env.WEB_URL}/boards/${board._id}|${board.name}>`;
+    const text = `\n>\`${data.activeUser.name}\` add \`${user.name}\` to board <${process.env.WEB_URL}/#/boards/${board._id}|${board.name}>`;
     sendMessage(text, board, slack, type);
   }
 };
@@ -20,7 +20,7 @@ const removeUserOutOfBoardConnection = async (type, boardId, data) => {
   const user = await User.findById(data.user[0].user);
   const board = await Board.findById(boardId);
   if (slack?.data.modifyUser) {
-    const text = `\n>\`${data.activeUser.name}\` remove \`${user.name}\` out of board <${process.env.WEB_URL}/boards/${board._id}|${board.name}>`;
+    const text = `\n>\`${data.activeUser.name}\` remove \`${user.name}\` out of board <${process.env.WEB_URL}/#/boards/${board._id}|${board.name}>`;
     sendMessage(text, board, slack, type);
   }
 };
@@ -31,7 +31,7 @@ const addUserToTicketConnection = async (type, ticketId, data) => {
   const slack = await slackConnection.findOne({ board: state.board });
   const board = await Board.findById(state.board);
   if (slack?.data.modifyUser) {
-    const text = `\n>\`${data.activeUser.name}\` add \`${user.name}\` to ticket <${process.env.WEB_URL}/boards/${board._id}/ticket/${ticket._id}|${ticket.name}>`;
+    const text = `\n>\`${data.activeUser.name}\` add \`${user.name}\` to ticket <${process.env.WEB_URL}/#/boards/${board._id}/ticket/${ticket._id}|${ticket.name}>`;
     sendMessage(text, board, slack, type);
   }
 };
@@ -42,7 +42,7 @@ const removeUserOutOfTicketConnection = async (type, ticketId, data) => {
   const slack = await slackConnection.findOne({ board: state.board });
   const board = await Board.findById(state.board);
   if (slack?.data.modifyUser) {
-    const text = `\n>\`${data.activeUser.name}\` remove \`${user.name}\` out of ticket <${process.env.WEB_URL}/boards/${board._id}/ticket/${ticket._id}|${ticket.name}>`;
+    const text = `\n>\`${data.activeUser.name}\` remove \`${user.name}\` out of ticket <${process.env.WEB_URL}/#/boards/${board._id}/ticket/${ticket._id}|${ticket.name}>`;
     sendMessage(text, board, slack, type);
   }
 };

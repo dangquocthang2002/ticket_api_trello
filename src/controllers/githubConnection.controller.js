@@ -135,6 +135,7 @@ const githubConnectionController = {
                 .slice(0, 6)
                 .join("-"),
           );
+
           const listTaskName = detailTicket.tasks.map(
             (task) =>
               "task-" +
@@ -149,6 +150,7 @@ const githubConnectionController = {
                 .slice(0, 6)
                 .join("-"),
           );
+
           const listTaskComplete = [];
           const listTaskAsync = [];
           await Promise.all(

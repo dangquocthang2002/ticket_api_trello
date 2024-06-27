@@ -11,7 +11,7 @@ const createTaskConnection = async (type, data) => {
   const board = await Board.findById(state.board);
   const slack = await slackConnection.findOne({ board: state.board });
   if (slack?.data.create) {
-    const text = `\n>\`${data.activeUser.name}\` add task \`${data.task.name}\` to ticket <${process.env.WEB_URL}/boards/${board._id}/ticket/${ticket._id}|${ticket.name}>`;
+    const text = `\n>\`${data.activeUser.name}\` add task \`${data.task.name}\` to ticket <${process.env.WEB_URL}/#/boards/${board._id}/ticket/${ticket._id}|${ticket.name}>`;
     sendMessage(text, board, slack, type);
   }
 };
@@ -21,7 +21,7 @@ const deleteTaskConnection = async (type, data) => {
   const board = await Board.findById(state.board);
   const slack = await slackConnection.findOne({ board: state.board });
   if (slack?.data.delete) {
-    const text = `\n>\`${data.activeUser.name}\` remove task \`${data.task.name}\` out of ticket <${process.env.WEB_URL}/boards/${board._id}/ticket/${ticket._id}|${ticket.name}>`;
+    const text = `\n>\`${data.activeUser.name}\` remove task \`${data.task.name}\` out of ticket <${process.env.WEB_URL}/#/boards/${board._id}/ticket/${ticket._id}|${ticket.name}>`;
     sendMessage(text, board, slack, type);
   }
 };
@@ -31,7 +31,7 @@ const updateTaskTitleConnection = async (type, data) => {
   const board = await Board.findById(state.board);
   const slack = await slackConnection.findOne({ board: state.board });
   if (slack?.data.update) {
-    const text = `\n>\`${data.activeUser.name}\` update task's title from \`${data.task.name}\` to \`${data.change.name}\` in ticket <${process.env.WEB_URL}/boards/${board._id}/ticket/${ticket._id}|${ticket.name}>`;
+    const text = `\n>\`${data.activeUser.name}\` update task's title from \`${data.task.name}\` to \`${data.change.name}\` in ticket <${process.env.WEB_URL}/#/boards/${board._id}/ticket/${ticket._id}|${ticket.name}>`;
     sendMessage(text, board, slack, type);
   }
 };
@@ -41,7 +41,7 @@ const userCompletedTaskConnection = async (type, data) => {
   const board = await Board.findById(state.board);
   const slack = await slackConnection.findOne({ board: state.board });
   if (slack?.data.update) {
-    const text = `\n>\`${data.activeUser.name}\` mark task \`${data.task.name}\` is completed in ticket <${process.env.WEB_URL}/boards/${board._id}/ticket/${ticket._id}|${ticket.name}>`;
+    const text = `\n>\`${data.activeUser.name}\` mark task \`${data.task.name}\` is completed in ticket <${process.env.WEB_URL}/#/boards/${board._id}/ticket/${ticket._id}|${ticket.name}>`;
     sendMessage(text, board, slack, type);
   }
 };
@@ -51,7 +51,7 @@ const userUncompletedTaskConnection = async (type, data) => {
   const board = await Board.findById(state.board);
   const slack = await slackConnection.findOne({ board: state.board });
   if (slack?.data.update) {
-    const text = `\n>\`${data.activeUser.name}\` mark task \`${data.task.name}\` is uncompleted in ticket <${process.env.WEB_URL}/boards/${board._id}/ticket/${ticket._id}|${ticket.name}>`;
+    const text = `\n>\`${data.activeUser.name}\` mark task \`${data.task.name}\` is uncompleted in ticket <${process.env.WEB_URL}/#/boards/${board._id}/ticket/${ticket._id}|${ticket.name}>`;
     sendMessage(text, board, slack, type);
   }
 };

@@ -34,7 +34,7 @@ const assignLabelToTicketConnection = async (type, data) => {
   const slack = await slackConnection.findOne({ board: state.board });
 
   if (slack?.data.assignLabel) {
-    const text = `\n>\`${data.activeUser.name}\` add label \`${data.label.name}\` to ticket <${process.env.WEB_URL}/boards/${board._id}/ticket/${ticket._id}|${ticket.name}>`;
+    const text = `\n>\`${data.activeUser.name}\` add label \`${data.label.name}\` to ticket <${process.env.WEB_URL}/#/boards/${board._id}/ticket/${ticket._id}|${ticket.name}>`;
     sendMessage(text, board, slack, type);
   }
 };
@@ -45,7 +45,7 @@ const removeLabelOutOfTicketConnection = async (type, data) => {
   const slack = await slackConnection.findOne({ board: state.board });
 
   if (slack?.data.assignLabel) {
-    const text = `\n>\`${data.activeUser.name}\` remove label \`${data.label.name}\` out of ticket <${process.env.WEB_URL}/boards/${board._id}/ticket/${ticket._id}|${ticket.name}>`;
+    const text = `\n>\`${data.activeUser.name}\` remove label \`${data.label.name}\` out of ticket <${process.env.WEB_URL}/#/boards/${board._id}/ticket/${ticket._id}|${ticket.name}>`;
     sendMessage(text, board, slack, type);
   }
 };
